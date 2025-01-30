@@ -97,7 +97,7 @@ export const FlightDetail = ({ flight, onClose }: FlightDetailProps) => {
 
                     {/* Segments */}
                     <div className="space-y-4">
-                      {leg.segments.map((segment, segmentIndex) => (
+                      {leg.segments.map((segment) => (
                         <div key={segment.id} className="pl-4 border-l-2 border-gray-200">
                           <div className="flex justify-between">
                             <div>
