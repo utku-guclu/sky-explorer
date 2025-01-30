@@ -20,7 +20,7 @@ export const FlightCard = ({ flight }: FlightCardProps) => {
         >
             <div className="flex justify-between items-start mb-4">
                 <div>
-                    <h3 className="text-2xl font-bold text-blue-600">
+                    <h3 className="text-2xl font-bold text-indigo-600">
                         {flight.price.formatted}
                     </h3>
                     <div className="flex items-center mt-1">

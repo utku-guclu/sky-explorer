@@ -21,10 +21,11 @@ export const FlightService = {
 
             console.log('Airport search response:', response.data);
 
-            return response.data.data;
+            return response.data.data || {};  // Ensure it never returns undefined
         } catch (error) {
             console.error('Airport search error:', error);
-            throw new Error('Failed to search airports');
+            return {}; // Return empty object instead of undefined
+            // throw new Error('Failed to search airports');
         }
     },
 

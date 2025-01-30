@@ -21,7 +21,7 @@ export const FilterControls = ({ filters, setFilters, availableAirlines }: Filte
         >
             <div className="flex justify-between items-center mb-3">
                 <h3 className="text-lg font-semibold">Filters</h3>
-                <button onClick={() => setShowFilters(!showFilters)} className="text-blue-600 hover:text-blue-700">
+                <button onClick={() => setShowFilters(!showFilters)} className="bg-indigo-600 text-white hover:text-indigo-100">
                     {showFilters ? "Hide" : "Show"} Filters
                 </button>
             </div>
@@ -41,7 +41,7 @@ export const FilterControls = ({ filters, setFilters, availableAirlines }: Filte
                                             : filters.stops.filter((s) => s !== stopCount)
                                         setFilters({ ...filters, stops: newStops })
                                     }}
-                                    className="rounded text-blue-600"
+                                    className="rounded bg-indigo-600"
                                 />
                                 <span>{stopCount === 0 ? "Non-stop" : `${stopCount} stop${stopCount > 1 ? "s" : ""}`}</span>
                             </label>
@@ -61,7 +61,7 @@ export const FilterControls = ({ filters, setFilters, availableAirlines }: Filte
                                             : filters.airlines.filter((a) => a !== airline)
                                         setFilters({ ...filters, airlines: newAirlines })
                                     }}
-                                    className="rounded text-blue-600"
+                                    className="rounded bg-indigo-600"
                                 />
                                 <span>{airline}</span>
                             </label>

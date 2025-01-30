@@ -10,7 +10,7 @@ function App() {
       <div className="min-h-screen bg-gray-50">
         <header className="bg-white shadow-sm">
           <div className="max-w-7xl mx-auto py-4 px-4">
-            <h1 className="text-3xl font-bold text-blue-600">Flight Search</h1>
+            <h1 className="text-3xl font-bold text-indigo-600">Flight Search</h1>
           </div>
         </header>
 

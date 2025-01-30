@@ -22,7 +22,7 @@ export const SortControls = ({ sortBy, setSortBy }: SortControlsProps) => (
                 <button
                     key={option.value}
                     onClick={() => setSortBy(option.value)}
-                    className={`p-2 rounded-lg transition-colors ${sortBy === option.value ? "bg-blue-600 text-white" : "bg-gray-100 hover:bg-gray-200"
+                    className={`p-2 rounded-lg transition-colors ${sortBy === option.value ? "bg-indigo-600 text-white" : "bg-gray-100 hover:bg-gray-200"
                         }`}
                 >
                     {option.label}

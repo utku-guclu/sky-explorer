@@ -19,7 +19,7 @@ export const FlightSearchPage = () => {
 
     // Filters & Sorting
     const [filters, setFilters] = useState({
-        stops: [0, 1, 2],
+        stops: [0, 1, 2, 3, 4, 5],
         airlines: [] as string[],
     })
     const [sortBy, setSortBy] = useState("price")
@@ -39,47 +39,65 @@ export const FlightSearchPage = () => {
     const { data: rawFlights, isLoading, error } = useQuery({
         queryKey: ['flights', searchParams],
         queryFn: () => FlightService.searchFlights(searchParams),
-        enabled: !!selectedOrigin && !!selectedDestination && !!departureDate,
-        retry: 1,
-    });
+        enabled: !!searchParams.originSkyId && !!searchParams.destinationSkyId,
+        select: (response) => {
+            console.log('API Response Structure:', response)
+            // Directly access itineraries from root of response
+            return response?.itineraries || []
+        },
+    })
 
     // Process flights data
     const processedFlights = useMemo(() => {
-        if (!rawFlights?.itineraries) return [];
+        // console.log('Raw flights data:', rawFlights)
+        if (!rawFlights || rawFlights.length === 0) return []
 
-        // Filtering
-        let result = rawFlights.itineraries.filter((flight: Flight) =>
-            flight.legs.every((leg) =>
-                filters.stops.includes(leg.stopCount) &&
-                leg.carriers.marketing.some(c => filters.airlines.includes(c.name))
-            )
-        );
+        const unfiltered = [...rawFlights]
+        // console.log('Unfiltered flights:', unfiltered)
 
-        // Sorting
-        result = result.sort((a: Flight, b: Flight) => {
+        // Apply filters
+        const filtered = unfiltered.filter((flight: Flight) =>
+            flight.legs.every(leg => {
+                // 1. Check stops filter
+                const stopValid = filters.stops.includes(Number(leg.stopCount))
+
+                // 2. Check airlines filter (allow all if empty)
+                const airlineValid = filters.airlines.length === 0 ||
+                    leg.carriers.marketing.some(c => filters.airlines.includes(String(c.name).trim()));
+
+                return stopValid && airlineValid
+            })
+        )
+
+        // Apply sorting
+        const sorted = filtered.sort((a: Flight, b: Flight) => {
             switch (sortBy) {
                 case 'price':
                     return a.price.raw - b.price.raw;
+
                 case 'duration':
                     return a.legs.reduce((sum, leg) => sum + leg.durationInMinutes, 0) -
                         b.legs.reduce((sum, leg) => sum + leg.durationInMinutes, 0);
+
                 case 'stops':
-                    return Math.min(...a.legs.map(leg => leg.stopCount)) -
-                        Math.min(...b.legs.map(leg => leg.stopCount));
+                    return Math.max(...a.legs.map(leg => leg.stopCount)) -
+                        Math.max(...b.legs.map(leg => leg.stopCount));
+
                 case 'departure':
                     return new Date(a.legs[0].departure).getTime() -
                         new Date(b.legs[0].departure).getTime();
+
                 default:
                     return 0;
             }
         });
 
-        return result;
-    }, [rawFlights, filters, sortBy]);
+        return sorted
+    }, [rawFlights, filters, sortBy])
 
     const availableAirlines = useMemo(() => {
         const airlines = new Set<string>();
-        rawFlights?.itineraries?.forEach((flight: Flight) =>
+        rawFlights?.forEach((flight: Flight) =>
             flight.legs.forEach(leg =>
                 leg.carriers.marketing.forEach(c => airlines.add(c.name))
             )
